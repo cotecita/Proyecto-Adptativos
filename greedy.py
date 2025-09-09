@@ -40,7 +40,26 @@ if __name__ ==  "__main__":
         filename = os.fsdecode(f)
         
         with open(os.path.join(choosen_dataset_path, filename) , "r") as file:
-            unknown = file.readline() #Parece que esta línea es el número de instancias nomás
+            total_nodes = int(file.readline()) #Parece que esta línea es el número de nodos nomás
+
+            graph_matrix = [[0 for _ in range(total_nodes)] for _ in range(total_nodes)]
+
+            #este loop rellena la matriz de adyacencia
+            for line in file:
+                ab_nodes = line.split()
+                a_node = int(ab_nodes[0])
+                b_node = int(ab_nodes[1])
+
+                graph_matrix[a_node][b_node] += 1
+                
+            total_neighbors = [0 for _ in range(total_nodes)]
+            
+            #aquí se cuentan los vecinos de cada nodo
+            for i in range(total_nodes):
+                for j in range(total_nodes):
+                    if(graph_matrix[i][j] == 1):
+                        total_neighbors[i] += 1
+
 
         sys.exit()
         
