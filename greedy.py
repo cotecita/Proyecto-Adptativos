@@ -39,8 +39,10 @@ if __name__ ==  "__main__":
     for f in os.listdir(directory):
         filename = os.fsdecode(f)
         
+        nodes_selected = []
+
         with open(os.path.join(choosen_dataset_path, filename) , "r") as file:
-            print("processing " + filename)
+            #print("processing " + filename)
 
             total_nodes = int(file.readline()) #Parece que esta línea es el número de nodos nomás
             nodes_in_mis = 0
@@ -48,7 +50,7 @@ if __name__ ==  "__main__":
             graph_matrix = [[0 for _ in range(total_nodes)] for _ in range(total_nodes)]
 
             #este loop rellena la matriz de adyacencia
-            print("filling adjacency matrix...")
+            #print("filling adjacency matrix...")
             for line in file:
                 ab_nodes = line.split()
                 a_node = int(ab_nodes[0])
@@ -58,7 +60,7 @@ if __name__ ==  "__main__":
                 
             total_neighbors = [0 for _ in range(total_nodes)]
             
-            print("counting neighbours...")
+            #print("counting neighbours...")
             #aquí se cuentan los vecinos de cada nodo
             for i in range(total_nodes):
                 for j in range(total_nodes):
@@ -68,25 +70,25 @@ if __name__ ==  "__main__":
             remaining_nodes = total_nodes
 
             while remaining_nodes > 0:
-                print("el nodo 0 tiene valor " + str(total_neighbors[0]))
                 #este loop es para ir borrando el nodo con menos vecinos
                 #si el nodo es -1 entonces ya se agregó al MIS
                 min_value = total_nodes
                 min_index=0
 
                 #aquí se ve qué nodo tiene menos vecinos y su índice
-                print("selecting node with the least neighbours...")
+                #print("selecting node with the least neighbours...")
                 for j in range(len(total_neighbors)):
                     if total_neighbors[j] < min_value and total_neighbors[j] > -1:
                         min_value = total_neighbors[j]
                         min_index = j
 
-                print("node selected: " + str(min_index))
+                #print("node selected: " + str(min_index))
+                nodes_selected.append(min_index)
                 total_neighbors[min_index] = -1
                 nodes_in_mis += 1
 
                 #aquí borramos el nodo elegido y sus vecinos de la matriz de adyacencia
-                print("cleaning selected node...")
+                #print("cleaning selected node...")
                 for i in range(len(total_neighbors)):
 
                     #este loop es para borrar todo rastro del vecino
@@ -101,14 +103,14 @@ if __name__ ==  "__main__":
                     graph_matrix[min_index][i] = 0
 
                 #se reinician los nodos de cada vecino menos de los elegidos (y debería borrar a sus vecinos igual)
-                print("resetting neighbours...")
+                #print("resetting neighbours...")
                 for i in range(len(total_neighbors)):
                     if total_neighbors[i]>-1:
                         total_neighbors[i] = 0
                 
                 remaining_nodes = 0
                 #aquí se ve cuantos nodos quedan y se agregan al mis los que no tienen vecinos
-                print("counting remaining nodes and adding to MIS")
+                #print("counting remaining nodes and adding to MIS")
                 for i in range(total_nodes):
                     if total_neighbors[i] == -1:
                         continue
@@ -122,18 +124,14 @@ if __name__ ==  "__main__":
                     elif total_neighbors[i] == 0:
                         nodes_in_mis += 1
                         total_neighbors[i] = -1
-                print("nodes in mis: " + str(nodes_in_mis))
-                print("remaining nodes: " + str(remaining_nodes))
+                #print("nodes in mis: " + str(nodes_in_mis))
+                #print("remaining nodes: " + str(remaining_nodes))
+                #print(nodes_selected)
+                
 
+            #print("repetidos? " + str(len(nodes_selected) != len(set(nodes_selected))))
+            print(nodes_in_mis)
             
-            print("en la solución hay " + str(nodes_in_mis) + " nodos")
-            
-
-
-
-
-
-        sys.exit()
         
 
     
