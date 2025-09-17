@@ -51,7 +51,7 @@ if __name__ ==  "__main__":
         for f in os.listdir(directory):
             filename = os.fsdecode(f)
 
-            if str(density) not in filename or f"{density+0.05:.2f}" in filename:
+            if f"{density:.1f}" not in filename or f"{density+0.05:.2f}" in filename:
                 continue
 
             #print("filename es " + filename);
@@ -75,6 +75,7 @@ if __name__ ==  "__main__":
                     b_node = int(ab_nodes[1])
 
                     graph_matrix[a_node][b_node] += 1
+                    graph_matrix[b_node][a_node] += 1
                     
                 total_neighbors = [0 for _ in range(total_nodes)]
                 
@@ -91,7 +92,7 @@ if __name__ ==  "__main__":
                     #este loop es para ir borrando el nodo con menos vecinos
                     #si el nodo es -1 entonces ya se agregó al MIS
                     min_value = total_nodes
-                    min_index=0
+                    min_index=-1
 
                     #aquí se ve qué nodo tiene menos vecinos y su índice
                     #print("selecting node with the least neighbours...")
@@ -99,6 +100,9 @@ if __name__ ==  "__main__":
                         if total_neighbors[j] < min_value and total_neighbors[j] > -1:
                             min_value = total_neighbors[j]
                             min_index = j
+
+                    if min_index == -1:
+                        break
 
                     #Este paso es exlusivo del e-greedy: tiramos una moneda (de 0 a 100). Si la moneda es menor a determinismo
                     #entonces hacemos lista de mejores candidatos y seleccionamos uno al azar.
@@ -112,7 +116,7 @@ if __name__ ==  "__main__":
                         
                         new_tuple = tuple(x for x in sorted_indexed_list if x[1] != -1)
                         
-                        index_select = random.randint(0, size_lista-1)
+                        index_select = random.randint(0, min(size_lista, len(new_tuple)) - 1)
                         min_value = new_tuple[index_select][1]
                         min_index = new_tuple[index_select][0]
 
@@ -164,7 +168,7 @@ if __name__ ==  "__main__":
                     
 
                 #print("repetidos? " + str(len(nodes_selected) != len(set(nodes_selected))))
-                print("n = " + str(nodes_in_mis))
+                #print("n = " + str(nodes_in_mis))
                 inst_end = time.time()
                 inst_total_time = inst_end - inst_start
                 print("Listo en " + str(inst_total_time) + " segundos")
@@ -172,7 +176,7 @@ if __name__ ==  "__main__":
                 total_density_nodes += nodes_in_mis
 
         print("Media de nodos: " + str(total_density_nodes/30))
-        print("Tiempo total de todas las instancias con p=" + str(density) + ": " + str(total_density_time))        
+        print("Tiempo total de todas las instancias con p=" + f"{density:.1f}" + ": " + str(total_density_time))        
         print("Tiempo promedio de ejecución: " + str(total_density_time/30))
         density += 0.1
             
