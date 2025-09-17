@@ -39,14 +39,17 @@ if __name__ ==  "__main__":
     #ya obtenido el directorio aquí hay que iterar por cada file instancia
 
     density = 0.1
-    while density < 1:
+    while density < 1.0:
         total_density_nodes = 0
         total_density_time = 0
         for f in os.listdir(directory):
             filename = os.fsdecode(f)
 
-            if str(density) not in filename or f"{density+0.05:.2f}" in filename:
+
+            if f"{density:.1f}" not in filename or f"{density+0.05:.2f}" in filename:
                 continue
+            
+            #print("se encontró un " + str(density))
 
             #print("filename es " + filename);
 
@@ -69,6 +72,7 @@ if __name__ ==  "__main__":
                     b_node = int(ab_nodes[1])
 
                     graph_matrix[a_node][b_node] += 1
+                    graph_matrix[b_node][a_node] += 1
                     
                 total_neighbors = [0 for _ in range(total_nodes)]
                 
@@ -85,7 +89,7 @@ if __name__ ==  "__main__":
                     #este loop es para ir borrando el nodo con menos vecinos
                     #si el nodo es -1 entonces ya se agregó al MIS
                     min_value = total_nodes
-                    min_index=0
+                    min_index=-1
 
                     #aquí se ve qué nodo tiene menos vecinos y su índice
                     #print("selecting node with the least neighbours...")
@@ -93,6 +97,9 @@ if __name__ ==  "__main__":
                         if total_neighbors[j] < min_value and total_neighbors[j] > -1:
                             min_value = total_neighbors[j]
                             min_index = j
+
+                    if(min_index == -1):
+                        break
 
                     #print("node selected: " + str(min_index))
                     nodes_selected.append(min_index)
@@ -142,7 +149,7 @@ if __name__ ==  "__main__":
                     
 
                 #print("repetidos? " + str(len(nodes_selected) != len(set(nodes_selected))))
-                print("n = " + str(nodes_in_mis))
+                #print("n = " + str(nodes_in_mis))
                 inst_end = time.time()
                 inst_total_time = inst_end - inst_start
                 print("Listo en " + str(inst_total_time) + " segundos")
@@ -150,7 +157,7 @@ if __name__ ==  "__main__":
                 total_density_nodes += nodes_in_mis
 
         print("Media de nodos: " + str(total_density_nodes/30))
-        print("Tiempo total de todas las instancias con p=" + str(density) + ": " + str(total_density_time))        
+        print("Tiempo total de todas las instancias con p=" + f"{density:.1f}" + ": " + str(total_density_time))        
         print("Tiempo promedio de ejecución: " + str(total_density_time/30))
         density += 0.1
             
