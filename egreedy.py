@@ -168,7 +168,7 @@ if __name__ ==  "__main__":
                     
 
                 #print("repetidos? " + str(len(nodes_selected) != len(set(nodes_selected))))
-                #print("n = " + str(nodes_in_mis))
+                print("Nodos en grafo: " + str(nodes_in_mis))
                 inst_end = time.time()
                 inst_total_time = inst_end - inst_start
                 print("Listo en " + str(inst_total_time) + " segundos")
